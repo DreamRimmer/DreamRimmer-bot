@@ -5,7 +5,7 @@ from collections import defaultdict
 DRY_RUN = False
 
 def get_db_connection():
-    return toolforge.connect('simplewiki', read_default_file="/home/paws/.my.cnf", charset='utf8mb4')
+    return toolforge.connect('simplewiki', charset='utf8mb4')
 
 def fetch_movie_pages(cursor):
     cursor.execute("SELECT page_title FROM page WHERE page_namespace = 0 AND (page_title REGEXP '\\\\([0-9]{4}_movie\\\\)$' OR page_title REGEXP '\\\\([0-9]{4}_film\\\\)$' OR page_title LIKE '%(movie)' OR page_title LIKE '%(film)')"); return cursor.fetchall()
