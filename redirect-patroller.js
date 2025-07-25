@@ -170,6 +170,15 @@ async function getPatrollableUsers( bot ) {
         }
         const users = listContent.split('\n').map(u => u.replace(/^\* {{user2\|(.*?)}}/, '$1'));
 
+        let blacklistedUsers = [];
+        if ( pagecontent.indexOf('<!-- DannyS712 bot III: autopatrol blacklist start -->') !== -1 ) {
+                const blacklistContent = pagecontent.substring(
+                        pagecontent.indexOf('<!-- DannyS712 bot III: autopatrol blacklist start -->') + 53,
+                        pagecontent.indexOf('<!-- DannyS712 bot III: autopatrol blacklist end -->') - 1
+                );
+                blacklistedUsers = blacklistContent.split('\n').map(u => u.replace(/^\* {{user2\|(.*?)}}/, '$1'));
+        }
+
         log('Fetching administrators');
         const connection = getReplicaConnection();
         const adminSql = `
@@ -188,7 +197,7 @@ async function getPatrollableUsers( bot ) {
         connection.end();
 
         users.push(...adminUsers);
-        const uniqueUsers = [...new Set(users)];
+        const uniqueUsers = [...new Set(users)].filter(user => !blacklistedUsers.includes(user));
         users.length = 0;
         users.push(...uniqueUsers);
         
