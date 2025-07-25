@@ -86,45 +86,6 @@ async function getBot() {
 }
 
 /**
- * Check if DannyS712 bot III has not made an edit in the past hour
- * @param {MWBot} bot - The MWBot instance
- * @returns {boolean} - true if the bot is inactive, false otherwise
- */
-async function isBotInactive(bot) {
-    try {
-        log('Checking DannyS712 bot III activity status');
-
-        const response = await bot.request({
-            action: 'query',
-            list: 'usercontribs',
-            ucuser: 'User:DannyS712 bot III',
-            ucprop: 'timestamp',
-            uclimit: 1
-        });
-
-        const userContribs = response.query.usercontribs;
-
-        if (!userContribs || userContribs.length === 0) {
-            log('Bot is not active recently');
-            return true;
-        }
-
-        const lastEditTimestamp = userContribs[0].timestamp;
-        const lastEditTime = new Date(lastEditTimestamp);
-        const currentTime = new Date();
-
-        const timeDifferenceMinutes = (currentTime - lastEditTime) / 1000 / 60;
-
-        log(`Time since last edit: ${timeDifferenceMinutes} minutes`);
-
-        return timeDifferenceMinutes > 60;
-    } catch (err) {
-        log('Failed to check bot activity', err);
-        return false;
-    }
-}
-
-/**
  * Update the report with the given content.
  * @param {String} content
  * @param {MWBot} bot
@@ -336,11 +297,6 @@ function comparePages( target, title ) {
  */
 async function main() {
         const bot = await getBot();
-        const botIsInactive = await isBotInactive(bot);
-        if (!botIsInactive) {
-            log('DannyS712 bot III has been active in the past hour. Exit');
-            process.exit();
-        }
         const results = await getRecentRedirects();
         const usersToPatrol = await getPatrollableUsers( bot );
 
