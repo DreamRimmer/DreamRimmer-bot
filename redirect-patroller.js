@@ -171,10 +171,10 @@ async function getPatrollableUsers( bot ) {
         const users = listContent.split('\n').map(u => u.replace(/^\* {{user2\|(.*?)}}/, '$1'));
 
         let blacklistedUsers = [];
-        if ( pagecontent.indexOf('<!-- DannyS712 bot III: autopatrol blacklist start -->') !== -1 ) {
+        if ( pagecontent.indexOf('<!-- DannyS712 bot III: do-not-autopatrol list start -->') !== -1 ) {
                 const blacklistContent = pagecontent.substring(
-                        pagecontent.indexOf('<!-- DannyS712 bot III: autopatrol blacklist start -->') + 53,
-                        pagecontent.indexOf('<!-- DannyS712 bot III: autopatrol blacklist end -->') - 1
+                        pagecontent.indexOf('<!-- DannyS712 bot III: do-not-autopatrol list start -->') + 57,
+                        pagecontent.indexOf('<!-- DannyS712 bot III: do-not-autopatrol list end -->') - 1
                 );
                 blacklistedUsers = blacklistContent.split('\n').map(u => u.replace(/^\* {{user2\|(.*?)}}/, '$1'));
         }
