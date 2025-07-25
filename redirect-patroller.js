@@ -169,26 +169,23 @@ async function getPatrollableUsers( bot ) {
                 )
         }
         const users = listContent.split('\n').map(u => u.replace(/^\* {{user2\|(.*?)}}/, '$1'));
-        
+
         log('Fetching administrators');
-        let adminUsers = [];
-        let continueParam = '';
-        
-        do {
-                const adminResult = await bot.request({
-                        action: 'query',
-                        list: 'allusers',
-                        continue: continueParam || '-||',
-                        formatversion: '2',
-                        augroup: 'sysop'
-                });
-                
-                if (adminResult.query && adminResult.query.allusers) {
-                        adminUsers = adminUsers.concat(adminResult.query.allusers.map(admin => admin.name));
-                }
-                
-                continueParam = adminResult.continue ? adminResult.continue.continue : null;
-        } while (continueParam);
+        const connection = getReplicaConnection();
+        const adminSql = `
+                SELECT user_name 
+                FROM user 
+                JOIN user_groups ON ug_user = user_id 
+                WHERE ug_group = 'sysop' 
+                        AND user_id NOT IN (
+                                SELECT ug_user 
+                                FROM user_groups 
+                                WHERE ug_group = 'autoreviewer'
+                        )`;
+        const fn = util.promisify(connection.query).bind(connection);
+        const adminResults = await fn(adminSql);
+        const adminUsers = adminResults.map(row => row.user_name);
+        connection.end();
 
         users.push(...adminUsers);
         const uniqueUsers = [...new Set(users)];
