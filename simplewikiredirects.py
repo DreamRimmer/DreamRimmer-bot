@@ -60,7 +60,7 @@ def create_redirects(pairs, redirect_map, redirect_status):
         else:
             film_page = pywikibot.Page(site, film_title)
             if not film_page.exists():
-                film_page.text = f"#REDIRECT [[{redirect_target}]]"
+                film_page.text = f"#REDIRECT [[{redirect_target}]]\n\n{{{{R from other name}}}}"
                 film_page.save(summary=f"Redirected page to [[{redirect_target}]]")
 
 conn = get_db_connection()
