@@ -143,25 +143,24 @@ async function getPatrollableUsers( bot ) {
         log('Fetching administrators');
         const connection = getReplicaConnection();
         const adminSql = `
-                SELECT user_name 
-                FROM user 
-                JOIN user_groups ON ug_user = user_id 
-                WHERE ug_group = 'sysop' 
+                SELECT user_name
+                FROM user
+                JOIN user_groups ON ug_user = user_id
+                WHERE ug_group = 'sysop'
                         AND user_id NOT IN (
-                                SELECT ug_user 
-                                FROM user_groups 
+                                SELECT ug_user
+                                FROM user_groups
                                 WHERE ug_group = 'autoreviewer'
                         )`;
         const fn = util.promisify(connection.query).bind(connection);
         const adminResults = await fn(adminSql);
-        const adminUsers = adminResults.map(row => row.user_name);
+        const adminUsers = adminResults.map(row => row.user_name.toString('utf8'));
         connection.end();
 
         users.push(...adminUsers);
         const uniqueUsers = [...new Set(users)].filter(user => !blacklistedUsers.includes(user));
         users.length = 0;
         users.push(...uniqueUsers);
-        
         console.log( users );
         return users;
 }
