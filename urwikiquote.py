@@ -31,7 +31,7 @@ if img_data[0] and img_data[1]:
 else:
     text = old_text.split("<!-- List Top -->", 1)[0] + new_list_block + old_text.split("<!-- List Bottom -->", 1)[1]
 
-pywikibot.showDiff(old_text, text)
+#pywikibot.showDiff(old_text, text)
 template.text = text
 print(text)
-#template.save(summary="update list (bot)")
+template.save(summary="update list (bot)")
