@@ -9,6 +9,9 @@ pages = []
 image_map = {}
 
 for page in gen:
+    if page.isRedirectPage():
+        continue
+
     pages.append(page.title())
     for filepage in page.imagelinks():
         title = filepage.title()
@@ -34,4 +37,4 @@ else:
 #pywikibot.showDiff(old_text, text)
 template.text = text
 print(text)
-template.save(summary="update list (bot)")
+template.save(summary="تجدید فہرست (روبہ)")
