@@ -4,7 +4,7 @@ import pywikibot
 from pywikibot import pagegenerators
 
 site = pywikibot.Site("wikiquote:ur")
-gen = pagegenerators.NewpagesPageGenerator(site=site, namespaces=(0,), total=15)
+gen = pagegenerators.NewpagesPageGenerator(site=site, namespaces=(0,))
 pages = []
 image_map = {}
 
@@ -18,6 +18,9 @@ for page in gen:
         if "Wikipedia-logo" in title:
             continue
         image_map.setdefault(page.title(), []).append(title.replace("فائل:", "").replace("File:", ""))
+
+    if len(pages) == 15:
+        break
 
 template = pywikibot.Page(site, "Template:New pages")
 old_text = template.text
